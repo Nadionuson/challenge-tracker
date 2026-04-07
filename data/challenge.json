@@ -1,0 +1,43 @@
+{
+  "challenges": [
+    {
+      "id": "apr-2026",
+      "name": "30 Day Challenge",
+      "startDate": "2026-04-07",
+      "endDate": "2026-05-06",
+      "participants": [
+        {
+          "id": "ines",
+          "name": "Inês",
+          "color": "#e94560",
+          "joinedDate": "2026-04-07",
+          "goals": [
+            { "id": "no-alcohol",       "name": "No Alcohol",       "startDate": "2026-04-07" },
+            { "id": "no-sugar",         "name": "No Sugar",         "startDate": "2026-04-07" },
+            { "id": "no-complex-carbs", "name": "No Complex Carbs", "startDate": "2026-04-07" },
+            { "id": "exercise",         "name": "15+ Exercise",     "startDate": "2026-04-07" },
+            { "id": "reading",          "name": "15 min Reading",   "startDate": "2026-04-07" },
+            { "id": "water",            "name": "Drink 2L Water",   "startDate": "2026-04-07" },
+            { "id": "fruit",            "name": "Eat Fruit",        "startDate": "2026-04-07" }
+          ]
+        },
+        {
+          "id": "andre",
+          "name": "André",
+          "color": "#60a5fa",
+          "joinedDate": "2026-04-07",
+          "goals": [
+            { "id": "no-alcohol",       "name": "No Alcohol",       "startDate": "2026-04-07" },
+            { "id": "no-sugar",         "name": "No Sugar",         "startDate": "2026-04-07" },
+            { "id": "no-complex-carbs", "name": "No Complex Carbs", "startDate": "2026-04-07" },
+            { "id": "exercise",         "name": "15+ Exercise",     "startDate": "2026-04-07" },
+            { "id": "reading",          "name": "15 min Reading",   "startDate": "2026-04-07" },
+            { "id": "water",            "name": "Drink 2L Water",   "startDate": "2026-04-07" },
+            { "id": "fruit",            "name": "Eat Fruit",        "startDate": "2026-04-07" }
+          ]
+        }
+      ],
+      "entries": {}
+    }
+  ]
+}
