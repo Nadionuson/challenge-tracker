@@ -1,1 +1,13 @@
 @import "tailwindcss";
+
+@layer components {
+  .input-field {
+    @apply bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 text-white text-sm placeholder-[#8b949e] focus:outline-none focus:border-[#58a6ff] w-full;
+  }
+  .btn-primary {
+    @apply bg-[#238636] hover:bg-[#2ea043] disabled:opacity-50 text-white text-sm py-2 rounded-lg font-medium transition-colors;
+  }
+  .btn-secondary {
+    @apply bg-[#1f2937] border border-[#30363d] text-[#8b949e] hover:text-white text-sm py-2 rounded-lg transition-colors;
+  }
+}
