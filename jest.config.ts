@@ -8,7 +8,7 @@ const config: Config = {
     '^.+\\.(ts|tsx)$': ['ts-jest', { tsconfig: { jsx: 'react-jsx' } }],
   },
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1',
+    '^@/(.*)$': '<rootDir>/$1',
   },
   testMatch: ['**/?(*.)+(spec|test).[tj]s?(x)'],
 }
