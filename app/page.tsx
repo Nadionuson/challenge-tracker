@@ -1,4 +1,6 @@
 // app/page.tsx
+export const dynamic = 'force-dynamic'
+
 import { redirect } from 'next/navigation'
 import { readChallengeFile } from '@/lib/github'
 import { getActiveChallenge } from '@/lib/metrics'

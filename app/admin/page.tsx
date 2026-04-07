@@ -1,4 +1,6 @@
 // app/admin/page.tsx
+export const dynamic = 'force-dynamic'
+
 import { readChallengeFile } from '@/lib/github'
 import AdminDrawer from '@/components/AdminDrawer'
 import { getActiveChallenge } from '@/lib/metrics'

@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { notFound } from 'next/navigation'
 import { readChallengeFile } from '@/lib/github'
 import Header from '@/components/Header'
