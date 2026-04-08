@@ -100,7 +100,11 @@
             "reading": false
           },
           "andre": {
-            "exercise": true
+            "exercise": true,
+            "no-alcohol": true,
+            "no-sugar": true,
+            "no-complex-carbs": true,
+            "fruit": true
           }
         }
       }
