@@ -5,6 +5,8 @@ import {
   computeBestStreak,
   computeConsistency,
   computePerfectDays,
+  computeGoalStreak,
+  computeGoalCompletion,
 } from '../metrics'
 import { Challenge, ChallengeFile, Participant } from '../types'
 
@@ -103,5 +105,75 @@ describe('computePerfectDays', () => {
     // Days 07,08,09,10 are perfect; day 11 is not
     const result = computePerfectDays(participant, challenge.entries, '2026-04-11')
     expect(result).toEqual({ count: 4, total: 5 })
+  })
+})
+
+describe('computeGoalStreak', () => {
+  it('counts consecutive completed days backwards for a goal', () => {
+    // g1 completed on 07,08,09,10,11 → streak of 5 on day 11
+    expect(computeGoalStreak(goal1, 'p1', challenge.entries, '2026-04-11')).toBe(5)
+  })
+
+  it('returns 0 when today is not done and yesterday is not done', () => {
+    // g2: starts 04-10 → done on 10, not done on 11. On 04-12 (no entry): yesterday 11 not done → 0
+    expect(computeGoalStreak(goal2, 'p1', challenge.entries, '2026-04-12')).toBe(0)
+  })
+
+  it('starts from yesterday when today is missed', () => {
+    // g2: done on 10, missed on 11. Today=11 → starts from 10 → streak = 1
+    expect(computeGoalStreak(goal2, 'p1', challenge.entries, '2026-04-11')).toBe(1)
+  })
+
+  it('returns 0 when goal has not started yet', () => {
+    expect(computeGoalStreak(goal2, 'p1', challenge.entries, '2026-04-09')).toBe(0)
+  })
+
+  it('skips non-applicable days for frequency-filtered goals', () => {
+    // A weekdays-only goal: completed Mon-Fri, weekend skipped, completed next Mon
+    const weekdayGoal = { id: 'wd', name: 'Weekday Goal', startDate: '2026-04-06', frequency: 'weekdays' as const }
+    const entries = {
+      '2026-04-06': { p1: { wd: true } }, // Mon
+      '2026-04-07': { p1: { wd: true } }, // Tue
+      '2026-04-08': { p1: { wd: true } }, // Wed
+      '2026-04-09': { p1: { wd: true } }, // Thu
+      '2026-04-10': { p1: { wd: true } }, // Fri
+      // 04-11 Sat, 04-12 Sun — not applicable, should be skipped
+      '2026-04-13': { p1: { wd: true } }, // Mon
+    }
+    // On Monday 04-13: streak should be 6 (Mon-Fri + Mon, weekends skipped)
+    expect(computeGoalStreak(weekdayGoal, 'p1', entries, '2026-04-13')).toBe(6)
+  })
+})
+
+describe('computeGoalCompletion', () => {
+  it('counts completed vs total applicable days', () => {
+    // g1: applicable every day from 04-07 to 04-11 = 5 days, all completed
+    const result = computeGoalCompletion(goal1, 'p1', challenge.entries, '2026-04-07', '2026-04-11')
+    expect(result).toEqual({ completed: 5, total: 5 })
+  })
+
+  it('handles goal added mid-challenge', () => {
+    // g2: starts 04-10, checked on 04-10 to 04-11 → 2 applicable days, 1 completed (10 done, 11 false)
+    const result = computeGoalCompletion(goal2, 'p1', challenge.entries, '2026-04-07', '2026-04-11')
+    expect(result).toEqual({ completed: 1, total: 2 })
+  })
+
+  it('returns 0/0 when goal has not started', () => {
+    const result = computeGoalCompletion(goal2, 'p1', challenge.entries, '2026-04-07', '2026-04-09')
+    expect(result).toEqual({ completed: 0, total: 0 })
+  })
+
+  it('handles frequency-filtered goals correctly', () => {
+    // weekdays-only goal across a full week (Mon 04-06 to Sun 04-12) = 5 applicable days
+    const weekdayGoal = { id: 'wd', name: 'Weekday Goal', startDate: '2026-04-06', frequency: 'weekdays' as const }
+    const entries = {
+      '2026-04-06': { p1: { wd: true } },  // Mon ✓
+      '2026-04-07': { p1: { wd: true } },  // Tue ✓
+      '2026-04-08': { p1: { wd: false } }, // Wed ✗
+      '2026-04-09': { p1: { wd: true } },  // Thu ✓
+      '2026-04-10': { p1: { wd: true } },  // Fri ✓
+    }
+    const result = computeGoalCompletion(weekdayGoal, 'p1', entries, '2026-04-06', '2026-04-12')
+    expect(result).toEqual({ completed: 4, total: 5 }) // Sat+Sun not counted
   })
 })

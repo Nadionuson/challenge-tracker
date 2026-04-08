@@ -4,16 +4,23 @@ import { Participant } from '@/lib/types'
 import { getApplicableGoals } from '@/lib/metrics'
 import GoalList from './GoalList'
 
+export interface GoalStats {
+  streak: number
+  completed: number
+  total: number
+}
+
 interface ParticipantColumnProps {
   participant: Participant
   checked: Record<string, boolean>
   streak: number
+  goalStats: Record<string, GoalStats>
   onChange: (goalId: string, value: boolean) => void
   date: string
 }
 
 export default function ParticipantColumn({
-  participant, checked, streak, onChange, date,
+  participant, checked, streak, goalStats, onChange, date,
 }: ParticipantColumnProps) {
   const applicable = getApplicableGoals(participant, date)
   const completedCount = applicable.filter(g => checked[g.id] === true).length
@@ -31,6 +38,7 @@ export default function ParticipantColumn({
       <GoalList
         goals={applicable}
         checked={checked}
+        goalStats={goalStats}
         onChange={onChange}
       />
     </div>

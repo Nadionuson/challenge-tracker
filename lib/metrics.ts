@@ -123,3 +123,57 @@ export function computePerfectDays(
   const count = dates.filter(d => isDayPerfect(participant, entries, d)).length
   return { count, total: dates.length }
 }
+
+function addDays(date: string, n: number): string {
+  const [y, m, d] = date.split('-').map(Number)
+  const result = new Date(Date.UTC(y, m - 1, d + n))
+  return result.toISOString().slice(0, 10)
+}
+
+export function computeGoalStreak(
+  goal: Goal,
+  participantId: string,
+  entries: Entries,
+  today: string
+): number {
+  if (goal.startDate > today) return 0
+
+  const doneToday = isGoalApplicableOnDate(goal, today) && entries[today]?.[participantId]?.[goal.id] === true
+  let current = doneToday ? today : subtractDays(today, 1)
+  let streak = 0
+
+  while (current >= goal.startDate) {
+    if (!isGoalApplicableOnDate(goal, current)) {
+      current = subtractDays(current, 1)
+      continue
+    }
+    if (entries[current]?.[participantId]?.[goal.id] !== true) break
+    streak++
+    current = subtractDays(current, 1)
+  }
+
+  return streak
+}
+
+export function computeGoalCompletion(
+  goal: Goal,
+  participantId: string,
+  entries: Entries,
+  challengeStartDate: string,
+  today: string
+): { completed: number; total: number } {
+  const start = goal.startDate > challengeStartDate ? goal.startDate : challengeStartDate
+  let completed = 0
+  let total = 0
+  let current = start
+
+  while (current <= today) {
+    if (isGoalApplicableOnDate(goal, current)) {
+      total++
+      if (entries[current]?.[participantId]?.[goal.id] === true) completed++
+    }
+    current = addDays(current, 1)
+  }
+
+  return { completed, total }
+}

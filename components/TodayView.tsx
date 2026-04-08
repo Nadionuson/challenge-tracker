@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Challenge, ParticipantEntries } from '@/lib/types'
 import { saveEntries } from '@/lib/actions'
 import ParticipantColumn from './ParticipantColumn'
-import { computeStreak } from '@/lib/metrics'
+import { computeStreak, computeGoalStreak, computeGoalCompletion, getApplicableGoals } from '@/lib/metrics'
 
 interface TodayViewProps {
   challenge: Challenge
@@ -123,16 +123,26 @@ export default function TodayView({ challenge, today, initialEntries }: TodayVie
 
       {/* Side-by-side columns */}
       <div className="grid grid-cols-2 gap-3 p-4">
-        {challenge.participants.map(participant => (
-          <ParticipantColumn
-            key={participant.id}
-            participant={participant}
-            checked={entries[participant.id] ?? {}}
-            streak={computeStreak(participant, challenge.entries, selectedDate)}
-            onChange={(goalId, value) => handleChange(participant.id, goalId, value)}
-            date={selectedDate}
-          />
-        ))}
+        {challenge.participants.map(participant => {
+          const applicable = getApplicableGoals(participant, selectedDate)
+          const goalStats: Record<string, { streak: number; completed: number; total: number }> = {}
+          for (const g of applicable) {
+            const streak = computeGoalStreak(g, participant.id, challenge.entries, selectedDate)
+            const { completed, total } = computeGoalCompletion(g, participant.id, challenge.entries, challenge.startDate, selectedDate)
+            goalStats[g.id] = { streak, completed, total }
+          }
+          return (
+            <ParticipantColumn
+              key={participant.id}
+              participant={participant}
+              checked={entries[participant.id] ?? {}}
+              streak={computeStreak(participant, challenge.entries, selectedDate)}
+              goalStats={goalStats}
+              onChange={(goalId, value) => handleChange(participant.id, goalId, value)}
+              date={selectedDate}
+            />
+          )
+        })}
       </div>
     </div>
   )

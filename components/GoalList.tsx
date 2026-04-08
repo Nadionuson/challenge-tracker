@@ -24,19 +24,27 @@ const FREQ_LABEL: Record<string, string> = {
   weekends: 'S–S',
 }
 
+interface GoalStatsEntry {
+  streak: number
+  completed: number
+  total: number
+}
+
 interface GoalListProps {
   goals: Goal[]
   checked: Record<string, boolean>
+  goalStats: Record<string, GoalStatsEntry>
   onChange: (goalId: string, value: boolean) => void
 }
 
-export default function GoalList({ goals, checked, onChange }: GoalListProps) {
+export default function GoalList({ goals, checked, goalStats, onChange }: GoalListProps) {
   return (
     <div className="p-2 flex flex-col gap-1">
       {goals.map(goal => {
         const done = checked[goal.id] === true
         const icon = categoryIcon(goal.category, goal.name)
         const freqLabel = goal.frequency && goal.frequency !== 'daily' ? FREQ_LABEL[goal.frequency] : null
+        const stats = goalStats[goal.id]
         return (
           <button
             key={goal.id}
@@ -56,6 +64,12 @@ export default function GoalList({ goals, checked, onChange }: GoalListProps) {
             </div>
             {icon && <span className="text-sm leading-none">{icon}</span>}
             <span className="text-xs flex-1">{goal.name}</span>
+            {stats && stats.streak > 0 && (
+              <span className="text-[9px] text-[#8b949e] bg-[#0d1117] px-1 rounded shrink-0">🔥{stats.streak}</span>
+            )}
+            {stats && (
+              <span className="text-[9px] text-[#8b949e] bg-[#0d1117] px-1 rounded shrink-0">{stats.completed}/{stats.total}</span>
+            )}
             {freqLabel && (
               <span className="text-[9px] text-[#8b949e] bg-[#0d1117] px-1 rounded shrink-0">{freqLabel}</span>
             )}
