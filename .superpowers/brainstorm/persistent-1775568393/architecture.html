@@ -1,0 +1,47 @@
+<h2>Architecture Approach</h2>
+<p class="subtitle">All three use Next.js + TypeScript + Tailwind on Vercel. The difference is how data is persisted.</p>
+
+<div class="options">
+
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>GitHub API as the database <span style="font-size:11px;color:#facc15;margin-left:8px">Recommended</span></h3>
+      <p>Data lives in <code>data/challenge.json</code> in the repo. Every check-in writes via the GitHub Contents API — which creates an actual git commit. You get full history, zero extra services, and the JSON is always readable on GitHub. Needs a GitHub Personal Access Token stored as a Vercel env var.</p>
+      <div class="pros-cons" style="margin-top:8px">
+        <div class="pros"><h4>Pros</h4><ul><li>Zero extra accounts or services</li><li>Full data history in git</li><li>JSON readable directly on GitHub</li><li>Free forever</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Needs a GitHub PAT (one-time setup)</li><li>Slight latency on save (~1s API call)</li><li>Rate limit: 5000 req/day (not a concern here)</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Vercel KV (Redis) for storage</h3>
+      <p>Data stored in Vercel's built-in Redis KV store. Instant reads/writes, no GitHub API involved. The JSON file in the repo becomes just the initial seed. Requires enabling Vercel KV on the project dashboard (free tier, ~$0/mo for this usage).</p>
+      <div class="pros-cons" style="margin-top:8px">
+        <div class="pros"><h4>Pros</h4><ul><li>Fastest reads/writes</li><li>Native Vercel integration</li><li>No GitHub API or PAT needed</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Extra service to set up</li><li>No data history or audit trail</li><li>Data lives outside the repo</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Vercel Blob for JSON file storage</h3>
+      <p>Data stored as a JSON blob in Vercel's file storage. Simpler than KV — it's literally a JSON file served from a URL. Easy to inspect, download, and back up. Also requires enabling Vercel Blob on the dashboard (free tier: 1GB).</p>
+      <div class="pros-cons" style="margin-top:8px">
+        <div class="pros"><h4>Pros</h4><ul><li>Closest to "JSON file" mental model</li><li>Easily downloadable/inspectable</li><li>Simple API</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Extra service to set up</li><li>No history</li><li>Less familiar than KV or GitHub API</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="section" style="margin-top:24px;padding:12px;background:#0f3460;border-radius:8px">
+  <p class="label">Common to all three</p>
+  <p style="font-size:13px;color:#aaa;margin:0">Next.js 14 App Router · TypeScript · Tailwind · Vercel deployment · Password auth via Next.js middleware + env var · Challenge config in <code>data/challenge.json</code> (seed)</p>
+</div>

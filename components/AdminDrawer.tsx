@@ -1,18 +1,30 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { addGoal, addParticipant, createChallenge, extendChallenge } from '@/lib/actions'
-import { ActionResult } from '@/lib/types'
+import { addGoalToParticipants, addParticipant, createChallenge, extendChallenge } from '@/lib/actions'
+import { ActionResult, GoalFrequency } from '@/lib/types'
 
 type AdminView = 'menu' | 'addGoal' | 'addParticipant' | 'newChallenge' | 'extend'
 
 const DEFAULT_CATEGORIES = ['Healthy eating', 'Workout', 'Self Growth']
 
+interface KnownGoal {
+  name: string
+  category?: string
+  frequency?: GoalFrequency
+}
+
+interface ChallengeOption {
+  id: string
+  name: string
+  endDate: string
+  participants: { id: string; name: string }[]
+}
+
 interface AdminDrawerProps {
-  challengeId: string
-  participantIds: { id: string; name: string }[]
-  currentEndDate: string
-  existingCategories?: string[]
+  currentChallengeId: string
+  allChallenges: ChallengeOption[]
+  existingGoals?: KnownGoal[]
 }
 
 function ResultMessage({ result }: { result: ActionResult | null }) {
@@ -24,14 +36,46 @@ function ResultMessage({ result }: { result: ActionResult | null }) {
   )
 }
 
-export default function AdminDrawer({ challengeId, participantIds, currentEndDate, existingCategories = [] }: AdminDrawerProps) {
+export default function AdminDrawer({ currentChallengeId, allChallenges, existingGoals = [] }: AdminDrawerProps) {
+  const knownGoalMap = new Map(existingGoals.map(g => [g.name.toLowerCase(), g]))
+  const goalNameOptions = [...new Map(existingGoals.map(g => [g.name.toLowerCase(), g.name])).values()]
+  const existingCategories = [...new Set(existingGoals.map(g => g.category).filter(Boolean) as string[])]
   const categoryOptions = [...new Set([...DEFAULT_CATEGORIES, ...existingCategories])]
+
+  const currentChallenge = allChallenges.find(c => c.id === currentChallengeId) ?? allChallenges[0]
+
   const [open, setOpen] = useState(false)
   const [view, setView] = useState<AdminView>('menu')
   const [result, setResult] = useState<ActionResult | null>(null)
   const [isPending, startTransition] = useTransition()
 
-  function reset() { setView('menu'); setResult(null) }
+  // Controlled fields for add goal form (enables auto-fill + challenge picker)
+  const [selectedChallengeId, setSelectedChallengeId] = useState(currentChallengeId)
+  const [selectedParticipantId, setSelectedParticipantId] = useState('__all__')
+  const [goalName, setGoalName] = useState('')
+  const [goalCategory, setGoalCategory] = useState('')
+  const [goalFrequency, setGoalFrequency] = useState<GoalFrequency>('daily')
+
+  const selectedChallenge = allChallenges.find(c => c.id === selectedChallengeId) ?? allChallenges[0]
+
+  function handleGoalNameChange(value: string) {
+    setGoalName(value)
+    const known = knownGoalMap.get(value.toLowerCase())
+    if (known) {
+      if (known.category) setGoalCategory(known.category)
+      if (known.frequency) setGoalFrequency(known.frequency)
+    }
+  }
+
+  function reset() {
+    setView('menu')
+    setResult(null)
+    setSelectedChallengeId(currentChallengeId)
+    setSelectedParticipantId('__all__')
+    setGoalName('')
+    setGoalCategory('')
+    setGoalFrequency('daily')
+  }
   function action(fn: () => Promise<ActionResult>) {
     setResult(null)
     startTransition(async () => {
@@ -83,31 +127,62 @@ export default function AdminDrawer({ challengeId, participantIds, currentEndDat
                 onSubmit={e => {
                   e.preventDefault()
                   const fd = new FormData(e.currentTarget)
-                  const name = fd.get('name') as string
-                  action(() => addGoal(
-                    challengeId,
-                    fd.get('participantId') as string,
+                  const participantIds = selectedParticipantId === '__all__'
+                    ? ['__all__']
+                    : [selectedParticipantId]
+                  action(() => addGoalToParticipants(
+                    selectedChallengeId,
+                    participantIds,
                     {
-                      id: name.toLowerCase().replace(/\s+/g, '-'),
-                      name,
+                      id: goalName.toLowerCase().replace(/\s+/g, '-'),
+                      name: goalName,
                       startDate: fd.get('startDate') as string,
-                      frequency: (fd.get('frequency') as string || 'daily') as import('@/lib/types').GoalFrequency,
-                      category: (fd.get('category') as string) || undefined,
+                      frequency: goalFrequency,
+                      category: goalCategory || undefined,
                     }
                   ))
                 }}
                 className="flex flex-col gap-3"
               >
                 <h3 className="text-white font-medium">Add Goal</h3>
+                {allChallenges.length > 1 && (
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[#8b949e] text-xs">Challenge</label>
+                    <select
+                      value={selectedChallengeId}
+                      onChange={e => { setSelectedChallengeId(e.target.value); setSelectedParticipantId('__all__') }}
+                      className="input-field"
+                    >
+                      {allChallenges.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                    </select>
+                  </div>
+                )}
                 <div className="flex flex-col gap-1">
                   <label className="text-[#8b949e] text-xs">Participant</label>
-                  <select name="participantId" required className="input-field">
-                    {participantIds.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                  <select
+                    value={selectedParticipantId}
+                    onChange={e => setSelectedParticipantId(e.target.value)}
+                    className="input-field"
+                  >
+                    <option value="__all__">All participants</option>
+                    {(selectedChallenge?.participants ?? []).map(p => (
+                      <option key={p.id} value={p.id}>{p.name}</option>
+                    ))}
                   </select>
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="text-[#8b949e] text-xs">Goal Name</label>
-                  <input name="name" placeholder="e.g. No sugar" required className="input-field" />
+                  <input
+                    value={goalName}
+                    onChange={e => handleGoalNameChange(e.target.value)}
+                    placeholder="e.g. No sugar"
+                    required
+                    list="goal-name-options"
+                    className="input-field"
+                  />
+                  <datalist id="goal-name-options">
+                    {goalNameOptions.map(n => <option key={n} value={n} />)}
+                  </datalist>
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="text-[#8b949e] text-xs">Start Date</label>
@@ -115,7 +190,7 @@ export default function AdminDrawer({ challengeId, participantIds, currentEndDat
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="text-[#8b949e] text-xs">Frequency</label>
-                  <select name="frequency" className="input-field">
+                  <select value={goalFrequency} onChange={e => setGoalFrequency(e.target.value as GoalFrequency)} className="input-field">
                     <option value="daily">Every day</option>
                     <option value="weekdays">Week days (Mon–Fri)</option>
                     <option value="weekends">Weekend (Sat–Sun)</option>
@@ -124,7 +199,8 @@ export default function AdminDrawer({ challengeId, participantIds, currentEndDat
                 <div className="flex flex-col gap-1">
                   <label className="text-[#8b949e] text-xs">Category</label>
                   <input
-                    name="category"
+                    value={goalCategory}
+                    onChange={e => setGoalCategory(e.target.value)}
                     placeholder="e.g. Workout"
                     list="category-options"
                     className="input-field"
@@ -135,7 +211,7 @@ export default function AdminDrawer({ challengeId, participantIds, currentEndDat
                 </div>
                 <div className="flex gap-2">
                   <button type="button" onClick={reset} className="flex-1 btn-secondary">Back</button>
-                  <button type="submit" disabled={isPending} className="flex-1 btn-primary">{isPending ? '…' : 'Save'}</button>
+                  <button type="submit" disabled={isPending || !goalName} className="flex-1 btn-primary">{isPending ? '…' : 'Save'}</button>
                 </div>
                 <ResultMessage result={result} />
               </form>
@@ -147,7 +223,7 @@ export default function AdminDrawer({ challengeId, participantIds, currentEndDat
                   e.preventDefault()
                   const fd = new FormData(e.currentTarget)
                   const today = new Date().toISOString().slice(0, 10)
-                  action(() => addParticipant(challengeId, {
+                  action(() => addParticipant(currentChallenge.id, {
                     id: (fd.get('name') as string).toLowerCase().replace(/\s+/g, '-'),
                     name: fd.get('name') as string,
                     color: fd.get('color') as string,
@@ -206,13 +282,13 @@ export default function AdminDrawer({ challengeId, participantIds, currentEndDat
                 onSubmit={e => {
                   e.preventDefault()
                   const fd = new FormData(e.currentTarget)
-                  action(() => extendChallenge(challengeId, fd.get('newEndDate') as string))
+                  action(() => extendChallenge(currentChallenge.id, fd.get('newEndDate') as string))
                 }}
                 className="flex flex-col gap-3"
               >
                 <h3 className="text-white font-medium">Extend Challenge</h3>
-                <p className="text-[#8b949e] text-xs">Current end date: {currentEndDate}</p>
-                <input name="newEndDate" type="date" required min={currentEndDate} className="input-field" />
+                <p className="text-[#8b949e] text-xs">Current end date: {currentChallenge.endDate}</p>
+                <input name="newEndDate" type="date" required min={currentChallenge.endDate} className="input-field" />
                 <div className="flex gap-2">
                   <button type="button" onClick={reset} className="flex-1 btn-secondary">Back</button>
                   <button type="submit" disabled={isPending} className="flex-1 btn-primary">{isPending ? '…' : 'Extend'}</button>

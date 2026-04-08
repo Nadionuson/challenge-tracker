@@ -14,12 +14,15 @@ export default async function AdminPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <p className="text-[#8b949e]">No challenges found.</p>
-        <AdminDrawer challengeId="" participantIds={[]} currentEndDate="" />
+        <AdminDrawer currentChallengeId="" allChallenges={[]} />
       </div>
     )
   }
 
-  const existingCategories = [...new Set(challenge.participants.flatMap(p => p.goals.map(g => g.category).filter(Boolean) as string[]))]
+  const existingGoals = [...new Map(
+    data.challenges.flatMap(c => c.participants.flatMap(p => p.goals))
+      .map(g => [g.name.toLowerCase(), { name: g.name, category: g.category, frequency: g.frequency }])
+  ).values()]
 
   return (
     <div className="min-h-screen p-6">
@@ -29,10 +32,9 @@ export default async function AdminPage() {
           <p className="text-[#8b949e] text-sm">Managing: {challenge.name}</p>
         </div>
         <AdminDrawer
-          challengeId={challenge.id}
-          participantIds={challenge.participants.map(p => ({ id: p.id, name: p.name }))}
-          currentEndDate={challenge.endDate}
-          existingCategories={existingCategories}
+          currentChallengeId={challenge.id}
+          allChallenges={data.challenges.map(c => ({ id: c.id, name: c.name, endDate: c.endDate, participants: c.participants.map(p => ({ id: p.id, name: p.name })) }))}
+          existingGoals={existingGoals}
         />
       </div>
     </div>

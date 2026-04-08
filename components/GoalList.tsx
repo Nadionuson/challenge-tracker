@@ -3,17 +3,20 @@
 
 import { Goal } from '@/lib/types'
 
-function categoryIcon(category?: string): string {
-  const c = (category ?? '').toLowerCase()
-  if (c.includes('eat') || c.includes('food') || c.includes('diet') || c.includes('nutrition')) return '🥗'
-  if (c.includes('workout') || c.includes('exercise') || c.includes('gym') || c.includes('fitness')) return '💪'
-  if (c.includes('growth') || c.includes('learn') || c.includes('read') || c.includes('study')) return '📚'
-  if (c.includes('sleep') || c.includes('rest') || c.includes('recovery')) return '😴'
-  if (c.includes('meditat') || c.includes('mindful') || c.includes('breath')) return '🧘'
+function categoryIcon(category?: string, name?: string): string {
+  const c = (category ?? name ?? '').toLowerCase()
+  if (c.includes('eat') || c.includes('food') || c.includes('diet') || c.includes('nutrition') || c.includes('sugar') || c.includes('meal') || c.includes('snack') || c.includes('calor') || c.includes('alcohol') || c.includes('carbs') || c.includes('drink')) return '🥗'
+  if (c.includes('workout') || c.includes('exercise') || c.includes('gym') || c.includes('fitness') || c.includes('run') || c.includes('walk') || c.includes('train') || c.includes('sport') || c.includes('steps')) return '💪'
+  if (c.includes('growth') || c.includes('learn') || c.includes('read') || c.includes('study') || c.includes('book') || c.includes('journal') || c.includes('reflect') || c.includes('goal')) return '📚'
+  if (c.includes('sleep') || c.includes('rest') || c.includes('recover') || c.includes('nap') || c.includes('bed')) return '😴'
+  if (c.includes('meditat') || c.includes('mindful') || c.includes('breath') || c.includes('calm') || c.includes('stress') || c.includes('relax')) return '🧘'
   if (c.includes('water') || c.includes('hydrat')) return '💧'
-  if (c.includes('social') || c.includes('connect') || c.includes('family') || c.includes('friend')) return '🤝'
+  if (c.includes('social') || c.includes('connect') || c.includes('family') || c.includes('friend') || c.includes('call') || c.includes('talk')) return '🤝'
+  if (c.includes('screen') || c.includes('phone') || c.includes('digital') || c.includes('social media') || c.includes('tv') || c.includes('instagram') || c.includes('tiktok')) return '📵'
+  if (c.includes('cook') || c.includes('meal prep') || c.includes('recipe')) return '🍳'
+  if (c.includes('gratitude') || c.includes('thankful') || c.includes('positive') || c.includes('affirmation')) return '🙏'
   if (category) return '🎯'
-  return ''
+  return '🎯'
 }
 
 const FREQ_LABEL: Record<string, string> = {
@@ -32,7 +35,7 @@ export default function GoalList({ goals, checked, onChange }: GoalListProps) {
     <div className="p-2 flex flex-col gap-1">
       {goals.map(goal => {
         const done = checked[goal.id] === true
-        const icon = categoryIcon(goal.category)
+        const icon = categoryIcon(goal.category, goal.name)
         const freqLabel = goal.frequency && goal.frequency !== 'daily' ? FREQ_LABEL[goal.frequency] : null
         return (
           <button

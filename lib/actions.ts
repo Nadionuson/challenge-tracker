@@ -53,17 +53,33 @@ export async function addGoal(
   participantId: string,
   goal: Goal
 ): Promise<ActionResult> {
+  return addGoalToParticipants(challengeId, [participantId], goal)
+}
+
+export async function addGoalToParticipants(
+  challengeId: string,
+  participantIds: string[], // pass ['__all__'] to add to every participant
+  goal: Goal
+): Promise<ActionResult> {
   try {
     const { data, sha } = await readChallengeFile()
-    const participant = data.challenges
-      .find(c => c.id === challengeId)
-      ?.participants.find(p => p.id === participantId)
-    if (!participant) return { success: false, error: 'Participant not found.' }
-    if (participant.goals.find(g => g.id === goal.id))
-      return { success: false, error: 'Goal ID already exists.' }
+    const challenge = data.challenges.find(c => c.id === challengeId)
+    if (!challenge) return { success: false, error: 'Challenge not found.' }
 
-    participant.goals.push(goal)
-    await writeChallengeFile(data, sha, `admin: add goal "${goal.name}" to ${participantId}`)
+    const targets = participantIds[0] === '__all__'
+      ? challenge.participants
+      : challenge.participants.filter(p => participantIds.includes(p.id))
+
+    if (targets.length === 0) return { success: false, error: 'Participant not found.' }
+
+    for (const participant of targets) {
+      if (!participant.goals.find(g => g.id === goal.id)) {
+        participant.goals.push(goal)
+      }
+    }
+
+    const who = participantIds[0] === '__all__' ? 'all' : participantIds.join(', ')
+    await writeChallengeFile(data, sha, `admin: add goal "${goal.name}" to ${who}`)
     return { success: true }
   } catch {
     return { success: false, error: 'Failed to add goal.' }
