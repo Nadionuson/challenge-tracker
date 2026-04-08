@@ -97,7 +97,11 @@
         "2026-04-08": {
           "ines": {
             "exercise": true,
-            "reading": false
+            "reading": false,
+            "no-alcohol": true,
+            "no-sugar": true,
+            "no-complex-carbs": true,
+            "fruit": true
           },
           "andre": {
             "exercise": true,
