@@ -96,7 +96,8 @@
       "entries": {
         "2026-04-08": {
           "ines": {
-            "exercise": true
+            "exercise": true,
+            "reading": false
           },
           "andre": {
             "exercise": true
