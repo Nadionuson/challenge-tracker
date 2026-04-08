@@ -19,6 +19,8 @@ export default async function AdminPage() {
     )
   }
 
+  const existingCategories = [...new Set(challenge.participants.flatMap(p => p.goals.map(g => g.category).filter(Boolean) as string[]))]
+
   return (
     <div className="min-h-screen p-6">
       <div className="flex items-center justify-between mb-6">
@@ -30,6 +32,7 @@ export default async function AdminPage() {
           challengeId={challenge.id}
           participantIds={challenge.participants.map(p => ({ id: p.id, name: p.name }))}
           currentEndDate={challenge.endDate}
+          existingCategories={existingCategories}
         />
       </div>
     </div>

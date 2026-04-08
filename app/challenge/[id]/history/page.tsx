@@ -15,6 +15,7 @@ export default async function HistoryPage({ params }: { params: Promise<{ id: st
   if (!challenge) notFound()
 
   const today = new Date().toISOString().slice(0, 10)
+  const existingCategories = [...new Set(challenge.participants.flatMap(p => p.goals.map(g => g.category).filter(Boolean) as string[]))]
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -25,6 +26,7 @@ export default async function HistoryPage({ params }: { params: Promise<{ id: st
             challengeId={id}
             participantIds={challenge.participants.map(p => ({ id: p.id, name: p.name }))}
             currentEndDate={challenge.endDate}
+            existingCategories={existingCategories}
           />
         }
       />

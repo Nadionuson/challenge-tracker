@@ -6,10 +6,13 @@ import { ActionResult } from '@/lib/types'
 
 type AdminView = 'menu' | 'addGoal' | 'addParticipant' | 'newChallenge' | 'extend'
 
+const DEFAULT_CATEGORIES = ['Healthy eating', 'Workout', 'Self Growth']
+
 interface AdminDrawerProps {
   challengeId: string
   participantIds: { id: string; name: string }[]
   currentEndDate: string
+  existingCategories?: string[]
 }
 
 function ResultMessage({ result }: { result: ActionResult | null }) {
@@ -21,7 +24,8 @@ function ResultMessage({ result }: { result: ActionResult | null }) {
   )
 }
 
-export default function AdminDrawer({ challengeId, participantIds, currentEndDate }: AdminDrawerProps) {
+export default function AdminDrawer({ challengeId, participantIds, currentEndDate, existingCategories = [] }: AdminDrawerProps) {
+  const categoryOptions = [...new Set([...DEFAULT_CATEGORIES, ...existingCategories])]
   const [open, setOpen] = useState(false)
   const [view, setView] = useState<AdminView>('menu')
   const [result, setResult] = useState<ActionResult | null>(null)
@@ -79,24 +83,56 @@ export default function AdminDrawer({ challengeId, participantIds, currentEndDat
                 onSubmit={e => {
                   e.preventDefault()
                   const fd = new FormData(e.currentTarget)
+                  const name = fd.get('name') as string
                   action(() => addGoal(
                     challengeId,
                     fd.get('participantId') as string,
                     {
-                      id: (fd.get('name') as string).toLowerCase().replace(/\s+/g, '-'),
-                      name: fd.get('name') as string,
+                      id: name.toLowerCase().replace(/\s+/g, '-'),
+                      name,
                       startDate: fd.get('startDate') as string,
+                      frequency: (fd.get('frequency') as string || 'daily') as import('@/lib/types').GoalFrequency,
+                      category: (fd.get('category') as string) || undefined,
                     }
                   ))
                 }}
                 className="flex flex-col gap-3"
               >
                 <h3 className="text-white font-medium">Add Goal</h3>
-                <select name="participantId" required className="input-field">
-                  {participantIds.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
-                </select>
-                <input name="name" placeholder="Goal name" required className="input-field" />
-                <input name="startDate" type="date" required defaultValue={new Date().toISOString().slice(0,10)} className="input-field" />
+                <div className="flex flex-col gap-1">
+                  <label className="text-[#8b949e] text-xs">Participant</label>
+                  <select name="participantId" required className="input-field">
+                    {participantIds.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                  </select>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-[#8b949e] text-xs">Goal Name</label>
+                  <input name="name" placeholder="e.g. No sugar" required className="input-field" />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-[#8b949e] text-xs">Start Date</label>
+                  <input name="startDate" type="date" required defaultValue={new Date().toISOString().slice(0,10)} className="input-field" />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-[#8b949e] text-xs">Frequency</label>
+                  <select name="frequency" className="input-field">
+                    <option value="daily">Every day</option>
+                    <option value="weekdays">Week days (Mon–Fri)</option>
+                    <option value="weekends">Weekend (Sat–Sun)</option>
+                  </select>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-[#8b949e] text-xs">Category</label>
+                  <input
+                    name="category"
+                    placeholder="e.g. Workout"
+                    list="category-options"
+                    className="input-field"
+                  />
+                  <datalist id="category-options">
+                    {categoryOptions.map(c => <option key={c} value={c} />)}
+                  </datalist>
+                </div>
                 <div className="flex gap-2">
                   <button type="button" onClick={reset} className="flex-1 btn-secondary">Back</button>
                   <button type="submit" disabled={isPending} className="flex-1 btn-primary">{isPending ? '…' : 'Save'}</button>

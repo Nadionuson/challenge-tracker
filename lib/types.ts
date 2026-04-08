@@ -1,9 +1,13 @@
 // lib/types.ts
 
+export type GoalFrequency = 'daily' | 'weekdays' | 'weekends'
+
 export interface Goal {
   id: string
   name: string
   startDate: string // ISO date YYYY-MM-DD
+  frequency?: GoalFrequency  // defaults to 'daily' when absent
+  category?: string
 }
 
 export interface Participant {

@@ -1,13 +1,22 @@
 // lib/metrics.ts
-import { ChallengeFile, Challenge, Participant, Entries } from './types'
+import { ChallengeFile, Challenge, Participant, Entries, Goal } from './types'
 
 export function getActiveChallenge(file: ChallengeFile, today: string): Challenge | null {
   const active = file.challenges.filter(c => c.startDate <= today && c.endDate >= today)
   return active.length > 0 ? active[active.length - 1] : null
 }
 
+export function isGoalApplicableOnDate(goal: Goal, date: string): boolean {
+  if (!goal.frequency || goal.frequency === 'daily') return true
+  const [y, m, d] = date.split('-').map(Number)
+  const dow = new Date(Date.UTC(y, m - 1, d)).getUTCDay() // 0=Sun, 6=Sat
+  if (goal.frequency === 'weekdays') return dow >= 1 && dow <= 5
+  if (goal.frequency === 'weekends') return dow === 0 || dow === 6
+  return true
+}
+
 export function getApplicableGoals(participant: Participant, date: string) {
-  return participant.goals.filter(g => g.startDate <= date)
+  return participant.goals.filter(g => g.startDate <= date && isGoalApplicableOnDate(g, date))
 }
 
 function isDayPerfect(participant: Participant, entries: Entries, date: string): boolean {

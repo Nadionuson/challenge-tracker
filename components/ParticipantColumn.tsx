@@ -1,6 +1,7 @@
 'use client'
 
 import { Participant } from '@/lib/types'
+import { getApplicableGoals } from '@/lib/metrics'
 import GoalList from './GoalList'
 
 interface ParticipantColumnProps {
@@ -14,7 +15,7 @@ interface ParticipantColumnProps {
 export default function ParticipantColumn({
   participant, checked, streak, onChange, date,
 }: ParticipantColumnProps) {
-  const applicable = participant.goals.filter(g => g.startDate <= date)
+  const applicable = getApplicableGoals(participant, date)
   const completedCount = applicable.filter(g => checked[g.id] === true).length
 
   return (
