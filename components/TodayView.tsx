@@ -13,25 +13,54 @@ interface TodayViewProps {
   initialEntries: Record<string, Record<string, boolean>>
 }
 
+function addDays(date: string, n: number): string {
+  const [y, m, d] = date.split('-').map(Number)
+  const result = new Date(Date.UTC(y, m - 1, d + n))
+  return result.toISOString().slice(0, 10)
+}
+
 export default function TodayView({ challenge, today, initialEntries }: TodayViewProps) {
   const router = useRouter()
-  const [entries, setEntries] = useState<Record<string, Record<string, boolean>>>(initialEntries)
+  const [selectedDate, setSelectedDate] = useState(today)
+  const [entriesByDate, setEntriesByDate] = useState<Record<string, Record<string, Record<string, boolean>>>>({
+    [today]: initialEntries,
+  })
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [isPending, startTransition] = useTransition()
 
+  const entries = entriesByDate[selectedDate] ?? {}
+
   function handleChange(participantId: string, goalId: string, value: boolean) {
-    setEntries(prev => ({
+    setEntriesByDate(prev => ({
       ...prev,
-      [participantId]: { ...(prev[participantId] ?? {}), [goalId]: value },
+      [selectedDate]: {
+        ...(prev[selectedDate] ?? {}),
+        [participantId]: { ...(prev[selectedDate]?.[participantId] ?? {}), [goalId]: value },
+      },
     }))
+  }
+
+  function navigateDate(delta: number) {
+    const next = addDays(selectedDate, delta)
+    if (next > today) return
+    if (next < challenge.startDate) return
+    setError(null)
+    setSuccess(false)
+    setSelectedDate(next)
+    if (!entriesByDate[next]) {
+      setEntriesByDate(prev => ({
+        ...prev,
+        [next]: challenge.entries[next] ?? {},
+      }))
+    }
   }
 
   function handleSave() {
     setError(null)
     setSuccess(false)
     startTransition(async () => {
-      const result = await saveEntries(challenge.id, today, entries)
+      const result = await saveEntries(challenge.id, selectedDate, entries)
       if (result.success) {
         setSuccess(true)
         router.refresh()
@@ -42,19 +71,41 @@ export default function TodayView({ challenge, today, initialEntries }: TodayVie
     })
   }
 
+  const isToday = selectedDate === today
+  const canGoBack = selectedDate > challenge.startDate
+
   return (
     <div className="flex flex-col h-full">
-      {/* Save button row */}
+      {/* Date nav + save row */}
       <div className="flex items-center justify-between px-4 py-2 border-b border-[#30363d]">
-        <p className="text-[#8b949e] text-xs">
-          {new Date(today + 'T00:00:00').toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })} · tap to toggle
-        </p>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => navigateDate(-1)}
+            disabled={!canGoBack}
+            className="text-[#8b949e] hover:text-white disabled:opacity-30 transition-colors px-1"
+            aria-label="Previous day"
+          >
+            ‹
+          </button>
+          <p className="text-[#8b949e] text-xs">
+            {new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })}
+            {isToday ? ' · tap to toggle' : ''}
+          </p>
+          <button
+            onClick={() => navigateDate(1)}
+            disabled={isToday}
+            className="text-[#8b949e] hover:text-white disabled:opacity-30 transition-colors px-1"
+            aria-label="Next day"
+          >
+            ›
+          </button>
+        </div>
         <button
           onClick={handleSave}
           disabled={isPending}
           className="bg-[#238636] hover:bg-[#2ea043] disabled:opacity-50 text-white text-xs px-3 py-1.5 rounded-md font-medium transition-colors"
         >
-          {isPending ? 'Saving…' : 'Save Today'}
+          {isPending ? 'Saving…' : 'Save'}
         </button>
       </div>
 
@@ -77,9 +128,9 @@ export default function TodayView({ challenge, today, initialEntries }: TodayVie
             key={participant.id}
             participant={participant}
             checked={entries[participant.id] ?? {}}
-            streak={computeStreak(participant, challenge.entries, today)}
+            streak={computeStreak(participant, challenge.entries, selectedDate)}
             onChange={(goalId, value) => handleChange(participant.id, goalId, value)}
-            date={today}
+            date={selectedDate}
           />
         ))}
       </div>
