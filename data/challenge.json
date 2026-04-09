@@ -146,6 +146,12 @@
             "no-sugar": true,
             "no-complex-carbs": true,
             "exercise": true
+          },
+          "ines": {
+            "no-sugar": true,
+            "no-alcohol": true,
+            "water": false,
+            "fruit": true
           }
         }
       }
