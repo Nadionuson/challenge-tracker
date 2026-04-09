@@ -144,7 +144,8 @@
             "water": true,
             "no-alcohol": true,
             "no-sugar": true,
-            "no-complex-carbs": true
+            "no-complex-carbs": true,
+            "exercise": true
           }
         }
       }
