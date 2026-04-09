@@ -137,6 +137,15 @@
             "reading": true,
             "fruit": true
           }
+        },
+        "2026-04-09": {
+          "andre": {
+            "fruit": true,
+            "water": true,
+            "no-alcohol": true,
+            "no-sugar": true,
+            "no-complex-carbs": true
+          }
         }
       }
     },
