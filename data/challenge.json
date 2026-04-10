@@ -163,6 +163,11 @@
             "no-sugar": true,
             "no-complex-carbs": true,
             "reading": true
+          },
+          "ines": {
+            "exercise": true,
+            "water": true,
+            "fruit": true
           }
         }
       }
