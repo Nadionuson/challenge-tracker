@@ -156,7 +156,11 @@
         },
         "2026-04-10": {
           "andre": {
-            "exercise": true
+            "exercise": true,
+            "water": true,
+            "fruit": true,
+            "no-alcohol": true,
+            "no-sugar": true
           }
         }
       }
