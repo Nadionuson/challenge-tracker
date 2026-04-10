@@ -160,7 +160,8 @@
             "water": true,
             "fruit": true,
             "no-alcohol": true,
-            "no-sugar": true
+            "no-sugar": true,
+            "no-complex-carbs": true
           }
         }
       }
