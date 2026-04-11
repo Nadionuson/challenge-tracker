@@ -169,6 +169,12 @@
             "water": true,
             "fruit": true
           }
+        },
+        "2026-04-11": {
+          "andre": {
+            "exercise": true,
+            "reading": true
+          }
         }
       }
     },
