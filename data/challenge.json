@@ -167,7 +167,8 @@
           "ines": {
             "exercise": true,
             "water": true,
-            "fruit": true
+            "fruit": true,
+            "no-complex-carbs": true
           }
         },
         "2026-04-11": {
