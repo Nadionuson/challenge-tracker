@@ -174,7 +174,12 @@
         "2026-04-11": {
           "andre": {
             "exercise": true,
-            "reading": true
+            "reading": true,
+            "fruit": true
+          },
+          "ines": {
+            "water": true,
+            "fruit": true
           }
         }
       }
