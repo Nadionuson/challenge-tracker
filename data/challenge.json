@@ -183,6 +183,12 @@
             "water": true,
             "fruit": true
           }
+        },
+        "2026-04-12": {
+          "andre": {
+            "no-alcohol": true,
+            "fruit": true
+          }
         }
       }
     },
