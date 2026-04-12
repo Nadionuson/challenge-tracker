@@ -173,9 +173,11 @@
         },
         "2026-04-11": {
           "andre": {
-            "exercise": true,
+            "exercise": false,
             "reading": true,
-            "fruit": true
+            "fruit": true,
+            "no-sugar": true,
+            "water": true
           },
           "ines": {
             "water": true,
