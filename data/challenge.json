@@ -193,6 +193,22 @@
             "fruit": true,
             "no-alcohol": true
           }
+        },
+        "2026-04-13": {
+          "ines": {
+            "no-alcohol": true,
+            "no-sugar": true,
+            "no-complex-carbs": true,
+            "water": true,
+            "fruit": true
+          },
+          "andre": {
+            "no-alcohol": true,
+            "no-sugar": true,
+            "no-complex-carbs": true,
+            "water": true,
+            "fruit": true
+          }
         }
       }
     },
