@@ -209,6 +209,21 @@
             "water": true,
             "fruit": true
           }
+        },
+        "2026-04-14": {
+          "andre": {
+            "no-alcohol": true,
+            "no-sugar": true,
+            "no-complex-carbs": true,
+            "exercise": true,
+            "water": true,
+            "fruit": true
+          },
+          "ines": {
+            "fruit": true,
+            "no-complex-carbs": true,
+            "no-alcohol": true
+          }
         }
       }
     },
