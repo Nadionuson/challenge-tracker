@@ -237,6 +237,13 @@
           "andre": {
             "fruit": true
           }
+        },
+        "2026-04-17": {
+          "andre": {
+            "no-alcohol": true,
+            "no-sugar": true,
+            "water": true
+          }
         }
       }
     },
