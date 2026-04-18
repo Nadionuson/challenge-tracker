@@ -247,8 +247,8 @@
         },
         "2026-04-17": {
           "andre": {
-            "no-alcohol": true,
-            "no-sugar": true,
+            "no-alcohol": false,
+            "no-sugar": false,
             "water": true
           }
         }
