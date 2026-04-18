@@ -97,7 +97,14 @@
           "name": "Inês O",
           "color": "#982abc",
           "joinedDate": "2026-04-08",
-          "goals": []
+          "goals": [
+            {
+              "id": "drink-2l-water",
+              "name": "Drink 2L Water",
+              "startDate": "2026-04-18",
+              "frequency": "daily"
+            }
+          ]
         }
       ],
       "entries": {
