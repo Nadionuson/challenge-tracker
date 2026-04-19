@@ -251,6 +251,13 @@
             "no-sugar": false,
             "water": true
           }
+        },
+        "2026-04-18": {
+          "andre": {
+            "no-sugar": true,
+            "reading": true,
+            "water": true
+          }
         }
       }
     },
