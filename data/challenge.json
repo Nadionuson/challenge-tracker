@@ -264,6 +264,15 @@
             "no-alcohol": false,
             "water": true
           }
+        },
+        "2026-04-20": {
+          "andre": {
+            "no-alcohol": true,
+            "no-sugar": true,
+            "no-complex-carbs": true,
+            "exercise": true,
+            "water": true
+          }
         }
       }
     },
