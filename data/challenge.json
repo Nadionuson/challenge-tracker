@@ -287,7 +287,7 @@
         "2026-04-22": {
           "andre": {
             "no-alcohol": true,
-            "no-complex-carbs": true,
+            "no-complex-carbs": false,
             "fruit": true
           }
         }
