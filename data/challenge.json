@@ -290,6 +290,15 @@
             "no-complex-carbs": false,
             "fruit": true
           }
+        },
+        "2026-04-23": {
+          "andre": {
+            "no-alcohol": true,
+            "no-sugar": true,
+            "no-complex-carbs": true,
+            "water": true,
+            "fruit": true
+          }
         }
       }
     },
