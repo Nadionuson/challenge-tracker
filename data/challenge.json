@@ -308,6 +308,11 @@
             "water": true,
             "no-complex-carbs": true
           }
+        },
+        "2026-04-25": {
+          "andre": {
+            "reading": true
+          }
         }
       }
     },
