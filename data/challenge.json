@@ -311,7 +311,10 @@
         },
         "2026-04-25": {
           "andre": {
-            "reading": true
+            "reading": true,
+            "no-alcohol": true,
+            "water": true,
+            "fruit": true
           }
         }
       }
