@@ -317,7 +317,16 @@
             "fruit": true
           }
         },
-        "2026-04-26": {}
+        "2026-04-26": {},
+        "2026-04-27": {
+          "andre": {
+            "no-alcohol": true,
+            "no-sugar": true,
+            "no-complex-carbs": true,
+            "exercise": true,
+            "fruit": true
+          }
+        }
       }
     },
     {
