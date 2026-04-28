@@ -327,6 +327,11 @@
             "fruit": true,
             "water": true
           }
+        },
+        "2026-04-28": {
+          "andre": {
+            "water": true
+          }
         }
       }
     },
