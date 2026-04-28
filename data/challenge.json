@@ -330,7 +330,8 @@
         },
         "2026-04-28": {
           "andre": {
-            "water": true
+            "water": true,
+            "exercise": true
           }
         }
       }
