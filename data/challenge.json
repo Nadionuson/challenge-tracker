@@ -333,6 +333,11 @@
             "water": true,
             "exercise": true
           }
+        },
+        "2026-04-29": {
+          "andre": {
+            "fruit": true
+          }
         }
       }
     },
