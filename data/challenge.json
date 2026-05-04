@@ -350,6 +350,11 @@
             "fruit": true,
             "no-sugar": true
           }
+        },
+        "2026-05-02": {
+          "andre": {
+            "fruit": true
+          }
         }
       }
     },
