@@ -365,7 +365,8 @@
         "2026-05-04": {
           "andre": {
             "exercise": true,
-            "fruit": true
+            "fruit": true,
+            "water": true
           }
         }
       }
