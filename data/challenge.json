@@ -361,6 +361,11 @@
             "no-sugar": true,
             "fruit": true
           }
+        },
+        "2026-05-04": {
+          "andre": {
+            "exercise": true
+          }
         }
       }
     },
