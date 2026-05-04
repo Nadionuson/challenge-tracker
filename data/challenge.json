@@ -364,7 +364,8 @@
         },
         "2026-05-04": {
           "andre": {
-            "exercise": true
+            "exercise": true,
+            "fruit": true
           }
         }
       }
