@@ -366,7 +366,10 @@
           "andre": {
             "exercise": true,
             "fruit": true,
-            "water": true
+            "water": true,
+            "no-alcohol": true,
+            "no-sugar": true,
+            "no-complex-carbs": true
           }
         }
       }
