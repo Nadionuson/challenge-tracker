@@ -375,7 +375,10 @@
         "2026-05-05": {
           "andre": {
             "fruit": true,
-            "exercise": true
+            "exercise": true,
+            "no-alcohol": true,
+            "no-sugar": true,
+            "no-complex-carbs": true
           }
         }
       }
