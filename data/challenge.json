@@ -380,6 +380,14 @@
             "no-sugar": true,
             "no-complex-carbs": true
           }
+        },
+        "2026-05-06": {
+          "andre": {
+            "no-alcohol": true,
+            "no-sugar": true,
+            "no-complex-carbs": false,
+            "fruit": true
+          }
         }
       }
     },
