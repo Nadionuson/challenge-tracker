@@ -388,6 +388,13 @@
             "no-complex-carbs": false,
             "fruit": true
           }
+        },
+        "2026-05-07": {
+          "andre": {
+            "fruit": true,
+            "no-alcohol": true,
+            "no-complex-carbs": true
+          }
         }
       }
     },
